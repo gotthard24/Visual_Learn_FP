@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import users_router from './routers/users.r.js'
+import path from 'path'
 
 dotenv.config()
 
