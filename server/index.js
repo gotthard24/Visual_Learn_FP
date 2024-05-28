@@ -2,6 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import users_router from './routers/users.r'
 
 dotenv.config()
 
@@ -20,4 +21,6 @@ app.get("/", (req, res) => {
     res.json({
       message: `Hello ${process.env.MY_NAME} from server!`,
     });
-  });
+});
+
+app.use('/users', users_router)
