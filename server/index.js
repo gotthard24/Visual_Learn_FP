@@ -1,34 +1,30 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import usersRouter from './routers/users.r.js';
-import { fileURLToPath } from 'url';
-import path, { dirname } from 'path';
+import express from 'express'
+import dotenv from 'dotenv'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import users_router from './routers/users.r.js'
+import path from 'path'
 
-dotenv.config();
+dotenv.config()
 
-const app = express();
+const app = express()
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+app.use(cors())
+app.use(express.urlencoded({extended: true}))
+app.use(express.json())
+app.use(cookieParser())
 
-app.use(cors());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
-
-app.listen(process.env.PORT || 3001, () => {
-  console.log(`Run on ${process.env.PORT || 3001}`);
-});
+app.listen(process.env.PORT || 3001, ()=>{
+    console.log(`Run on ${process.env.PORT || 3001}`);
+})
 
 app.get("/api", (req, res) => {
-  res.json({
-    message: `Hello ${process.env.MY_NAME} from server!`,
-  });
+    res.json({
+      message: `Hello ${process.env.MY_NAME} from server!`,
+    });
 });
 
-app.use('/users', usersRouter);
+app.use('/users', users_router)
 
 app.use(express.static(path.join(__dirname, "/client/dist")));
 
