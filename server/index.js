@@ -17,7 +17,7 @@ app.listen(process.env.PORT || 3001, ()=>{
     console.log(`Run on ${process.env.PORT || 3001}`);
 })
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
     res.json({
       message: `Hello ${process.env.MY_NAME} from server!`,
     });
@@ -25,8 +25,8 @@ app.get("/", (req, res) => {
 
 app.use('/users', users_router)
 
-// app.use(express.static(path.join(__dirname, "/client/build")));
+app.use(express.static(path.join(__dirname, "/client/build")));
 
-// app.get("*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+});
