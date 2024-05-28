@@ -2,7 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import users_router from './routers/users.r'
+import users_router from './routers/users.r.js'
 
 dotenv.config()
 

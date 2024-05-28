@@ -1,4 +1,4 @@
-import { db } from "../../../DI-Bootcamp/Week12/Day2/Auth/server/config/db"
+import { db } from '../config/db.js'
 
 export const register = async ({email, password}) => {
     try {

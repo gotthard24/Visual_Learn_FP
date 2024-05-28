@@ -1,4 +1,4 @@
-import { register } from "../models/users.m"
+import { register } from "../models/users.m.js"
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 dotenv.config()
