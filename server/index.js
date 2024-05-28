@@ -1,4 +1,4 @@
-import express, { json } from 'express'
+import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -15,3 +15,9 @@ app.use(cookieParser())
 app.listen(process.env.PORT || 3001, ()=>{
     console.log(`Run on ${process.env.PORT || 3001}`);
 })
+
+app.get("/", (req, res) => {
+    res.json({
+      message: `Hello ${process.env.MY_NAME} from server!`,
+    });
+  });
