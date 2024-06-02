@@ -12,3 +12,16 @@ export const register = async ({email, password}) => {
         throw new Error('registration failed')
     }
 }
+
+export const login = async (email) => {
+    try {
+        const user = db('users')
+        .select('id', 'email', 'password')
+        .where({email})
+        .first()
+        return user || null
+    } catch (error) {
+        console.log(`Login Error: ${error}`);      
+        throw new Error('Login Failed') 
+    }
+}
