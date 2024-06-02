@@ -1,7 +1,7 @@
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../App";
 import axios from "axios";
-import { DEPLOY_DOMAIN, LOCAL_DOMAIN } from "../hosts/options";
+import { DEPLOY_DOMAIN} from "../hosts/options";
 
 interface AuthProps {
     children: ReactNode;

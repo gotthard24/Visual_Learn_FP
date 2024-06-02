@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, TextField, Button } from "@mui/material";
 import { AuthContext } from "../../App";
 import { AuthContextType } from "../../App";
-import { LOCAL_DOMAIN, DEPLOY_DOMAIN } from "../../hosts/options";
+import { DEPLOY_DOMAIN } from "../../hosts/options";
 
 interface LoginPageProps {
   page: "Login" | "Register";
