@@ -35,20 +35,22 @@ export const _login = async (req, res) => {
         const isMatch = bcrypt.compareSync(password+'', user.password)
         if(!isMatch) return res.status(500).json({msg: 'Wrong Password'})
         
-        
+        const expirationTime = Math.floor(Date.now() / 1000) + 1 * ACCESS_TOKEN_EXPIRE; // 1 minute
+        const refExpirationTime = Math.floor(Date.now() / 1000) + 60 * ACCESS_TOKEN_EXPIRE * 24; // 1 day
+
         const accessToken = jwt.sign(
             {id: user.id, email: user.email},
             ACCESS_TOKEN_SECRET,
             {
-                expiresIn: ACCESS_TOKEN_EXPIRE * 1000
+                expiresIn: expirationTime
             }
         )
 
-        const refreshToken = jwt.sign(
+        const refToken = jwt.sign(
             {id: user.id, email: user.email},
             REFRESH_TOKEN_SECRET,
             {
-                expiresIn: 24 * REFRESH_TOKEN_EXPIRE * 60 * 1000
+                expiresIn: refExpirationTime
             }
         )
 
@@ -60,7 +62,15 @@ export const _login = async (req, res) => {
             sameSite: 'Strict'
         });
 
-        res.json({token: accessToken, refToken: refreshToken, email: user.email})
+        res.cookie("refToken", refToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: ACCESS_TOKEN_EXPIRE * 1000,
+            path: '/',
+            sameSite: 'Strict'
+        });
+
+        res.json({token: accessToken, refToken: refToken, email: user.email})
     } catch (error) {
         console.log(`_login => ${error}`);
         res.status(500).json({msg: 'login failed'})

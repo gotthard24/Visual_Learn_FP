@@ -32,8 +32,8 @@ const LoginPage = ({ page }: LoginPageProps) => {
           console.log(response.data);
           setToken(response.data.token);
           setRefToken(response.data.refToken)
-          localStorage.setItem('email', JSON.stringify(response.data.email));
-          localStorage.setItem('token', JSON.stringify(response.data.token));
+          localStorage.setItem('email', response.data.email);
+          localStorage.setItem('refToken', response.data.refToken);
           navigate('/');
         }
       } catch (error) {

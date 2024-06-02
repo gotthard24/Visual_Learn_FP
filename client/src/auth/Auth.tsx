@@ -10,7 +10,8 @@ interface AuthProps {
 const Auth = ({ children }: AuthProps): JSX.Element => {
     const { token } = useContext(AuthContext);
     const [redirect, setRedirect] = useState(false);
-
+    const refreshToken = localStorage.getItem('refToken') 
+    
     useEffect(() => {
         verify();
     }, []);
@@ -19,7 +20,8 @@ const Auth = ({ children }: AuthProps): JSX.Element => {
         try {
             const response = await axios.get(`${DEPLOY_DOMAIN}/users/verify`, {
                 headers: {
-                    'x-access-token': token
+                    'x-access-token': token,
+                    'x-refresh-token': refreshToken
                 },
                 withCredentials: true
             });
