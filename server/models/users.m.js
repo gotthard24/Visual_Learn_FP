@@ -6,6 +6,17 @@ export const register = async ({email, password}) => {
             'id',
             'email',
         ]);
+        
+        await db('users_total_progress').insert({
+            email: user.email
+        });
+
+        
+        await db('progress_by_levels').insert({
+            email: user.email,
+            level: 1 
+        });
+        
         return user
     } catch (error) {
         console.log(`Registration error: ${error}`);

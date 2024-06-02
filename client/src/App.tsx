@@ -8,24 +8,19 @@ import './App.css';
 
 export interface AuthContextType {
   token: string | undefined;
-  refToken: string | undefined;
   setToken: (token: string | undefined) => void;
-  setRefToken: (refToken: string | undefined) => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   token: undefined,
   setToken: () => {},
-  refToken: undefined,
-  setRefToken: () => {},
 });
 
 function App() {
   const [token, setToken] = useState<string | undefined>(undefined);
-  const [refToken, setRefToken] = useState<string | undefined>(undefined);
 
   return (
-    <AuthContext.Provider value={{ token, setToken, refToken, setRefToken }}>
+    <AuthContext.Provider value={{ token, setToken}}>
         <div>
           <Header/>
           <Routes>

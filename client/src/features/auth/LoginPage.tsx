@@ -13,9 +13,8 @@ interface LoginPageProps {
 const LoginPage = ({ page }: LoginPageProps) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
 
-  const { setToken, setRefToken } = useContext(AuthContext) as AuthContextType;
+  const { setToken} = useContext(AuthContext) as AuthContextType;
 
   const navigate = useNavigate();
 
@@ -28,10 +27,8 @@ const LoginPage = ({ page }: LoginPageProps) => {
           email, password
         }, { withCredentials: true });
         if (response.status === 200) {
-          setMessage('');
           console.log(response.data);
           setToken(response.data.token);
-          setRefToken(response.data.refToken)
           localStorage.setItem('email', response.data.email);
           localStorage.setItem('refToken', response.data.refToken);
           navigate('/');
@@ -46,7 +43,6 @@ const LoginPage = ({ page }: LoginPageProps) => {
           email, password
         }, { withCredentials: true });
         if (response.status === 200) {
-          setMessage('');
           console.log(response.data);
           navigate('/login');
         }
@@ -84,9 +80,6 @@ const LoginPage = ({ page }: LoginPageProps) => {
       <Button variant="contained" onClick={loginregister}>
         {page}
       </Button>
-      <div>
-        {message}
-      </div>
     </>
   );
 }
