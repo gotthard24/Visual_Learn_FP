@@ -8,6 +8,8 @@ import { fileURLToPath } from 'url';
 
 dotenv.config();
 
+const {LOCAL_ORIGIN, DOMAIN_ORIGIN} = process.env
+
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -15,7 +17,7 @@ const __dirname = path.dirname(__filename);
 
 app.use(cors(
   {
-      origin: 'http://localhost:5173',
+      origin: LOCAL_ORIGIN,
       credentials: true,
   }
 ))

@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 import jwt from "jsonwebtoken"
 dotenv.config()
 
-const {ACCESS_TOKEN_SECRET, ACCESS_TOKEN_EXPIRE} = process.env
+const {ACCESS_TOKEN_SECRET, ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN_EXPIRE, REFRESH_TOKEN_SECRET} = process.env
 
 export const _register = async(req, res) => {
     const {email, password} = req.body
@@ -40,19 +40,27 @@ export const _login = async (req, res) => {
             {id: user.id, email: user.email},
             ACCESS_TOKEN_SECRET,
             {
-                expiresIn: 24 * ACCESS_TOKEN_EXPIRE * 60 * 1000
+                expiresIn: ACCESS_TOKEN_EXPIRE * 1000
+            }
+        )
+
+        const refreshToken = jwt.sign(
+            {id: user.id, email: user.email},
+            REFRESH_TOKEN_SECRET,
+            {
+                expiresIn: 24 * REFRESH_TOKEN_EXPIRE * 60 * 1000
             }
         )
 
         res.cookie("token", accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 24 * ACCESS_TOKEN_EXPIRE * 60 * 1000,
+            maxAge: ACCESS_TOKEN_EXPIRE * 1000,
             path: '/',
             sameSite: 'Strict'
         });
 
-        res.json({token: accessToken, email: user.email})
+        res.json({token: accessToken, refToken: refreshToken, email: user.email})
     } catch (error) {
         console.log(`_login => ${error}`);
         res.status(500).json({msg: 'login failed'})

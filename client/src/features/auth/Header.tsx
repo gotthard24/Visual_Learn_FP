@@ -13,9 +13,6 @@ const Header = () => {
             <Button component={Link} to="/register">
                 Register
             </Button>
-            <Button component={Link} to="/dash">
-                DashBoard
-            </Button>
         </Stack>
     )
 }

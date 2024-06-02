@@ -3,11 +3,8 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { Box, TextField, Button } from "@mui/material";
 import { AuthContext } from "../../App";
-
-interface AuthContextType {
-  token: string | undefined;
-  setToken: (token: string | undefined) => void;
-}
+import { AuthContextType } from "../../App";
+import { LOCAL_DOMAIN, DEPLOY_DOMAIN } from "../../hosts/options";
 
 interface LoginPageProps {
   page: "Login" | "Register";
@@ -18,7 +15,7 @@ const LoginPage = ({ page }: LoginPageProps) => {
   const [password, setPassword] = useState<string>('');
   const [message, setMessage] = useState<string>('');
 
-  const { setToken } = useContext(AuthContext) as AuthContextType;
+  const { setToken, setRefToken } = useContext(AuthContext) as AuthContextType;
 
   const navigate = useNavigate();
 
@@ -26,13 +23,14 @@ const LoginPage = ({ page }: LoginPageProps) => {
     event.preventDefault();
     if (page === "Login") {
       try {
-        const response = await axios.post('http://127.0.0.1:3001/users/login', {
+        const response = await axios.post(`${DEPLOY_DOMAIN}/users/login`, {
           email, password
         }, { withCredentials: true });
         if (response.status === 200) {
           setMessage('');
           console.log(response.data);
           setToken(response.data.token);
+          setRefToken(response.data.refToken)
           localStorage.setItem('email', JSON.stringify(response.data.email));
           localStorage.setItem('token', JSON.stringify(response.data.token));
           navigate('/');
@@ -43,7 +41,7 @@ const LoginPage = ({ page }: LoginPageProps) => {
       }
     } else {
       try {
-        const response = await axios.post('http://127.0.0.1:3001/users/register', {
+        const response = await axios.post(`${DEPLOY_DOMAIN}/users/register`, {
           email, password
         }, { withCredentials: true });
         if (response.status === 200) {
