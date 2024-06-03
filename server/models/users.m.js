@@ -36,3 +36,14 @@ export const login = async (email) => {
         throw new Error('Login Failed') 
     }
 }
+
+export const getWords = async (email) => {
+    try {
+        const words = db('words')
+        .select('id', 'word', 'word_in_hebrew', 'word_in_russian', 'level')
+        return words
+    } catch (error) {
+        console.log(`Get all words: ${error}`);      
+        throw new Error('Get all words Failed') 
+    }
+}

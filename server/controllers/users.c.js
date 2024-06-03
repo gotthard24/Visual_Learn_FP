@@ -1,4 +1,4 @@
-import { register, login } from "../models/users.m.js"
+import { register, login, getWords} from "../models/users.m.js"
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import jwt from "jsonwebtoken"
@@ -30,7 +30,7 @@ export const _login = async (req, res) => {
         const {email, password} = req.body
         const user = await login(email.toLowerCase())
 
-        if(!user) return res.json(500).json({msg: 'Email not found'})
+        if(!user) return res.status(500).json({msg: 'Email not found'})
 
         const isMatch = bcrypt.compareSync(password+'', user.password)
         if(!isMatch) return res.status(500).json({msg: 'Wrong Password'})
@@ -88,5 +88,16 @@ export const _getuser = async(req, res) => {
     } catch (error) {
         console.log(`_getUser => ${error}`);
         res.status(404).json({msg: 'getting user failed'})
+    }
+}
+
+export const _getWords = async(req, res) => {
+    try {
+        const words = await getWords()
+        if(!words) return res.status(500).json({msg: 'Words not found'})
+        res.json(words)
+    } catch (error) {
+        console.log(`_getWords => ${error}`);
+        res.status(404).json({msg: 'getting words failed'})
     }
 }

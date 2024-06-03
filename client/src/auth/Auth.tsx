@@ -13,6 +13,7 @@ const Auth = ({ children }: AuthProps): JSX.Element => {
     const refreshToken = localStorage.getItem('refToken') 
     
     useEffect(() => {
+        // console.log('refToken from Auth',refreshToken);     
         verify();
     }, []);
 

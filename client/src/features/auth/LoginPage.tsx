@@ -12,6 +12,7 @@ interface LoginPageProps {
 
 const LoginPage = ({ page }: LoginPageProps) => {
   const [email, setEmail] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const { setToken} = useContext(AuthContext) as AuthContextType;
@@ -20,22 +21,29 @@ const LoginPage = ({ page }: LoginPageProps) => {
 
   const loginregister = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    console.log(`${DEPLOY_DOMAIN}/users/login`);
+    // console.log(`${DEPLOY_DOMAIN}/users/login`);
     if (page === "Login") {
       try {
         const response = await axios.post(`${DEPLOY_DOMAIN}/users/login`, {
           email, password
         }, { withCredentials: true });
         if (response.status === 200) {
-          console.log(response.data);
-          setToken(response.data.token);
-          localStorage.setItem('email', response.data.email);
-          localStorage.setItem('refToken', response.data.refToken);
-          navigate('/');
+            setMessage('')
+            console.log(response.data);
+            setToken(response.data.token);
+            localStorage.setItem('email', response.data.email);
+            localStorage.setItem('refToken', response.data.refToken);
+            navigate('/');
         }
       } catch (error) {
         setToken(undefined);
         console.log(error);
+
+        if (axios.isAxiosError(error) && error.response) {
+            setMessage(error.response.data.msg || 'Login failed');
+          } else {
+            setMessage('An error occurred during login');
+          }
       }
     } else {
       try {
@@ -43,11 +51,17 @@ const LoginPage = ({ page }: LoginPageProps) => {
           email, password
         }, { withCredentials: true });
         if (response.status === 200) {
-          console.log(response.data);
-          navigate('/login');
+            setMessage('')
+            console.log(response.data.msg);
+            navigate('/login');
         }
       } catch (error) {
         console.log(error);
+        if (axios.isAxiosError(error) && error.response) {
+            setMessage(error.response.data.msg || 'Register failed');
+          } else {
+            setMessage('An error occurred during register');
+          }
       }
     }
   }
@@ -80,6 +94,9 @@ const LoginPage = ({ page }: LoginPageProps) => {
       <Button variant="contained" onClick={loginregister}>
         {page}
       </Button>
+        <div>
+            {message}
+        </div>
     </>
   );
 }
