@@ -6,6 +6,7 @@ import Header from './features/auth/Header';
 import Auth from './auth/Auth';
 import './App.css';
 import WordsDisplay from './features/levelSlice/WordsDisplay';
+// import Buttons from './features/levelSlice/testButtons';
 
 export interface AuthContextType {
   token: string | undefined;
@@ -29,6 +30,7 @@ function App() {
             <Route path='/login' element={<LoginPage page={"Login"} />} />
             <Route path='/register' element={<LoginPage page={"Register"} />} />
             <Route path='/words' element={<Auth><WordsDisplay/></Auth>} />
+            {/* <Route path='/test' element={<Buttons/>} /> */}
           </Routes>
         </div>
     </AuthContext.Provider>

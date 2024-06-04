@@ -10,7 +10,7 @@ export const verifyAccessToken = (req, res, next) => {
     // console.log('cookies',req.cookies);
     const accessToken = req.cookies.token || req.headers['x-access-token'];
     const refreshToken = req.headers['x-refresh-token'];
-    console.log('initial refToken',refreshToken);
+    // console.log('initial refToken',refreshToken);
 
     if (accessToken) {
         console.log('i am inside if');

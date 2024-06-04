@@ -21,9 +21,12 @@ const Header = () => {
 
     return (
         <Stack spacing={2} direction={'row'}>
+            {/* <Button component={Link} to="/test">
+                Test
+            </Button>
             <Button component={Link} to="/words">
                 Words
-            </Button>
+            </Button> */}
             <Button component={Link} to="/">
                 Home
             </Button>

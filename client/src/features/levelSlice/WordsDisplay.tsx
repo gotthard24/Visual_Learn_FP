@@ -1,102 +1,111 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../app/store';
+import { getImageURLs, getWords } from './levelSlice';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { DEPLOY_DOMAIN } from '../../hosts/options';
-
-interface Word {
-  id: number;
-  word: string;
-}
-
-type ImageURLs = string[];
 
 const WordsDisplay = () => {
-  const [words, setWords] = useState<Word[]>([]);
-  const refreshToken = localStorage.getItem('refToken');
-  const [imageURLs, setImageURLs] = useState<ImageURLs>([]);
-  const [randomWords, setRandomWords] = useState<string[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [count, setCount] = useState<number>(0)
+  const [isStarted, setIsStarrted] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>('')
+  const status = useSelector((state: RootState) => state.levelReducer.status);
+  const words = useSelector((state: RootState) => state.levelReducer.words);
+  const imageURLs = useSelector((state: RootState) => state.levelReducer.imageURLs);
+  const dispatch = useDispatch<AppDispatch>();
+
+  interface Card {
+    word: string;
+    image: string | undefined;
+    buttons: (number | null)[];
+  }
 
   useEffect(() => {
-    getWords();
+    if(words.length === 0)
+    fetchWordsAndImages();
   }, []);
 
   useEffect(() => {
-    if (words.length > 0) {
-      getImages(words);
+    if (words.length > 0 && imageURLs.length > 0) {
+      setCards(generateCards());
     }
-  }, [words]);
+  }, [words, imageURLs]);
 
-  useEffect(() => {
-    if (words.length > 0) {
-      generateRandomWords();
-    }
-  }, [words]);
-
-  const getImages = async (words: Word[]) => {
-    const API_KEY = '44201920-d23d7ae2dc8e24522dfb3bd56';
-
-    try {
-      const imageURLPromises = words.map(async (item) => {
-        const URL = `https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(item.word)}`;
-        const response = await axios.get(URL);
-        return response.data.totalHits > 0 ? response.data.hits[0].webformatURL : null;
-      });
-      const imageURLs = await Promise.all(imageURLPromises);
-      setImageURLs(imageURLs);
-    } catch (error) {
-      console.error('Error fetching images', error);
-    }
-  };
-
-  const getWords = async () => {
-    try {
-      const response = await axios.get<Word[]>(`${DEPLOY_DOMAIN}/users/words`, {
-        headers: {
-          'x-refresh-token': refreshToken,
-        },
-      });
-      if (response.status === 200) {
-        setWords(response.data);
-      }
-    } catch (error) {
-      console.error('Error fetching words', error);
-    }
-  };
-
-  const generateRandomWords = () => {
-    const randomIndices = getRandomIndices(words.length);
-    const newRandomWords = randomIndices.map((index) => words[index].word);
-    setRandomWords(newRandomWords);
-  };
-
-  const getRandomIndices = (max: number) => {
-    const indices: number[] = [];
-    while (indices.length < 3) {
-      const randomIndex = Math.floor(Math.random() * max);
-      if (!indices.includes(randomIndex)) {
-        indices.push(randomIndex);
+  const fetchWordsAndImages = async () => {
+    if (status === 'idle') {
+      const result = await dispatch(getWords());
+      if (getWords.fulfilled.match(result)) {
+        await dispatch(getImageURLs(result.payload));
       }
     }
-    return indices;
   };
 
   const handleButtonClick = (word: string) => {
     console.log('Button clicked:', word);
+    if(word === cards[count].word){
+      console.log('WP');
+      setCount(count + 1)
+      setMessage('')
+    } else {
+      console.log('Dolboeb');
+      setMessage("Dolboeb")
+    }
+  };
+
+  const generateCards = () => {
+    return words.map((item, i) => {
+      const randomIndex1 = words.length > 0 ? Math.floor(Math.random() * words.length) : null;
+      const randomIndex2 = words.length > 0 ? Math.floor(Math.random() * words.length) : null;
+      const randomIndex3 = words.length > 0 ? Math.floor(Math.random() * words.length) : null;
+      return { word: item.word, image: imageURLs[i], buttons: [i, randomIndex1, randomIndex2, randomIndex3] };
+    });
+  };
+
+  const render = async() => {
+    setIsStarrted(true)
+  }
+
+  const shuffledButtons = (i: number) => {
+    if (!cards[i]) return null;
+    const shuffled = [...cards[i].buttons].sort(() => Math.random() - 0.5);
+    return (
+      <div>
+        {shuffled.map((number, buttonIndex) => (
+          number !== null && number < cards.length ? (
+            <button key={buttonIndex} onClick={() => handleButtonClick(cards[number].word)}>
+              {cards[number].word}
+            </button>
+          ) : null
+        ))}
+      </div>
+    );
   };
 
   return (
     <>
       <h1>Level 1: Food</h1>
-      {words.map((item, index) => (
-        <div key={index}>
-          {/* {item.word} <br /> */}
-          {imageURLs[index] && <img src={imageURLs[index]} alt={item.word} style={{ width: '30vw' }} />} <br />
-          <button onClick={() => handleButtonClick(item.word)}>{item.word}</button>
-          
-          {randomWords.map((word, i) => (
-            <button key={i} onClick={() => handleButtonClick(word)}>{word}</button>
-          ))} <br />
-        </div>
-      ))}
+      {console.log('cards', cards)}
+      {status === 'loading' && <p>Loading...</p>}
+      {status === 'failed' && <p>Error loading data.</p>}
+      {status === 'succeeded' && (
+        <>
+          <button onClick={() => render()}>Start</button>
+          {isStarted ? 
+            <>
+              <div key={count}>
+                {cards[count].image && <img src={cards[count].image} alt={cards[count].word} style={{ width: '30vw' }} />} <br />
+                {shuffledButtons(count)}
+              </div>
+              <h1>{message}</h1>
+            </>
+          : null}
+          {/* {cards.map((card, index) => (
+            <div key={index}>
+              {card.image && <img src={card.image} alt={card.word} style={{ width: '30vw' }} />} <br />
+              {shuffledButtons(index)}
+            </div>
+          ))} */}
+        </>
+      )}
     </>
   );
 };
