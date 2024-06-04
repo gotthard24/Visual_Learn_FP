@@ -6,7 +6,9 @@ import Header from './features/auth/Header';
 import Auth from './auth/Auth';
 import './App.css';
 import WordsDisplay from './features/levelSlice/WordsDisplay';
-// import Buttons from './features/levelSlice/testButtons';
+import Score from './features/score/Score';
+import Settings from './features/levelSlice/Settings';
+import LeaderBoard from './features/levelSlice/LeaderBoard';
 
 export interface AuthContextType {
   token: string | undefined;
@@ -24,13 +26,15 @@ function App() {
   return (
     <AuthContext.Provider value={{ token, setToken}}>
         <div>
+          <Score/>
           <Header/>
           <Routes>
             <Route path='/' element={<Auth><Home/></Auth>}/>
             <Route path='/login' element={<LoginPage page={"Login"} />} />
             <Route path='/register' element={<LoginPage page={"Register"} />} />
             <Route path='/words' element={<Auth><WordsDisplay/></Auth>} />
-            {/* <Route path='/test' element={<Buttons/>} /> */}
+            <Route path='/leaderboard' element={<Auth><LeaderBoard/></Auth>} />
+            <Route path='/settings' element={<Auth><Settings/></Auth>} />
           </Routes>
         </div>
     </AuthContext.Provider>

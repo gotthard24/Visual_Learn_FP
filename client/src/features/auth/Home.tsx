@@ -6,7 +6,7 @@ const Home = () => {
 
   return (
     <>
-      <h1>Home</h1>
+      <h1>Levels</h1>
       <ul>
         <h2>Welcome {`${email}`} !</h2>
         <Stack spacing={2} direction={'row'}>

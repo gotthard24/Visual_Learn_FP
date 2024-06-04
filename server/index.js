@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 
 app.use(cors(
   {
-      origin: DOMAIN_ORIGIN,
+      origin: LOCAL_ORIGIN,
       credentials: true,
   }
 ))

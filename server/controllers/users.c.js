@@ -1,4 +1,4 @@
-import { register, login, getWords} from "../models/users.m.js"
+import { register, login, getWords, getUsersProgress, addScoreByEmail, resetProgressByEmail, changeLanguageByEmail, getLanguageByEmail} from "../models/users.m.js"
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import jwt from "jsonwebtoken"
@@ -99,5 +99,77 @@ export const _getWords = async(req, res) => {
     } catch (error) {
         console.log(`_getWords => ${error}`);
         res.status(404).json({msg: 'getting words failed'})
+    }
+}
+
+export const _getUsersProgress = async(req, res) => {
+    try {
+        const result = await getUsersProgress()
+        if(!result) return res.status(500).json({msg: 'Results not found'})
+        res.json(result)
+    } catch (error) {
+        console.log(`_getUsersProgress => ${error}`);
+        res.status(404).json({msg: 'getting leaderBoard failed'})
+    }
+}
+
+export const _addScoreByEmail = async (req, res) => {
+    try {
+        const { email, score } = req.body;
+
+        if (!email || typeof score !== 'number') {
+            return res.status(400).json({ msg: 'Invalid data provided' });
+        }
+
+        await addScoreByEmail({ email, score });
+        res.status(200).json({ msg: 'Score added successfully' });
+    } catch (error) {
+        console.log(`_addScoreByEmail => ${error}`);
+        res.status(500).json({ msg: 'Adding score failed' });
+    }
+};
+
+export const _resetProgressByEmail = async(req, res) => {
+    try {
+        const {email} = req.body
+
+        if (!email) {
+            return res.status(400).json({ msg: 'Invalid data provided' });
+        }
+
+        await resetProgressByEmail(email)
+        res.status(200).json({ msg: 'Score reseted successfully' });
+    } catch (error) {
+        console.log(`_resetProgressByEmail => ${error}`);
+        res.status(500).json({ msg: 'Reset score failed' });
+    }
+}
+
+export const _changeLanguageByEmail = async(req, res) => {
+    try {
+        const {email, language} = req.body
+        // console.log(language);
+        if(!email || (language !== 'english' && language !== 'russian' && language !== 'hebrew')){
+            return res.status(400).json({ msg: 'Invalid data provided' });
+        }
+        await changeLanguageByEmail({email,language})
+        res.status(200).json({ msg: 'Language changed successfully', language: language });
+    } catch (error) {
+        console.log(`_changeLanguageByEmail => ${error}`);
+        res.status(500).json({ msg: 'Changing Lang failed' });
+    }
+}
+
+export const _getLanguageByEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ msg: 'Invalid data provided' });
+        }
+        const language = await getLanguageByEmail(email);
+        res.status(200).json({ msg: 'Language get successfully', language });
+    } catch (error) {
+        console.log(`_getLanguageByEmail => ${error}`);
+        res.status(500).json({ msg: 'Getting Lang failed' });
     }
 }

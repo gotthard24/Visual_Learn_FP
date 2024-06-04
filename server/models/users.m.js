@@ -47,3 +47,60 @@ export const getWords = async (email) => {
         throw new Error('Get all words Failed') 
     }
 }
+
+export const getUsersProgress = async () => {
+    try {
+        const results = db('users_total_progress')
+        .select('email', 'score')
+        .orderBy('score', 'desc')
+        return results
+    } catch (error) {
+        console.log(`Get results: ${error}`);      
+        throw new Error('Get results Failed') 
+    }
+}
+
+export const addScoreByEmail = async ({ email, score }) => {
+    try {
+        await db('users_total_progress')
+            .where({ email })
+            .increment('score', score);
+    } catch (error) {
+        console.log(`Adding score: ${error}`);
+        throw new Error('Adding score failed');
+    }
+};
+
+export const resetProgressByEmail = async(email) => {
+    try {
+        await db('users_total_progress')
+            .where({ email })
+            .update('score', 0);
+    } catch (error) {
+        console.log(`Reset: ${error}`);
+        throw new Error('Reset failed');
+    }
+}
+
+export const changeLanguageByEmail = async({email, language}) => {
+    try {
+        await db('users')
+            .where({ email })
+            .update({language});
+    } catch (error) {
+        console.log(`changeLanguage: ${error}`);
+        throw new Error('changeLanguage failed');
+    }
+}
+
+export const getLanguageByEmail = async(email) => {
+    try {
+        const [language] = await db('users')
+            .select('language')
+            .where({ email })
+        return language
+    } catch (error) {
+        console.log(`getLanguage: ${error}`);
+        throw new Error('getLanguage failed');
+    }
+}

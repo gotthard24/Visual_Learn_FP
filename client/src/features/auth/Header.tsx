@@ -21,20 +21,20 @@ const Header = () => {
 
     return (
         <Stack spacing={2} direction={'row'}>
-            {/* <Button component={Link} to="/test">
-                Test
-            </Button>
-            <Button component={Link} to="/words">
-                Words
-            </Button> */}
             <Button component={Link} to="/">
-                Home
+                Play
+            </Button>
+            <Button component={Link} to="/leaderboard">
+                LeaderBoard
             </Button>
             <Button component={Link} to="/login">
                 Login
             </Button>
             <Button component={Link} to="/register">
                 Register
+            </Button>
+            <Button component={Link} to="/settings">
+                Setting
             </Button>
             <Button onClick={logoutHandler}>
                 LogOut
