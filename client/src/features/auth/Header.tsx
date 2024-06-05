@@ -9,8 +9,8 @@ const Header = () => {
 
     const logoutHandler = () => {
         if (localStorage.getItem('refToken')){
-            localStorage.removeItem('refToken')
             localStorage.removeItem('email')
+            localStorage.removeItem('refToken')
             setToken(undefined)
             alert("Successfull logout")
             navigate('/login');

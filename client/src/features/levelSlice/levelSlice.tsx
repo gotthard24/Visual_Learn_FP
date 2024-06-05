@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { DEPLOY_DOMAIN } from "../../hosts/options";
 import axios from "axios";
+import { createClient } from 'pexels';
 
 export interface Word {
     id: number;
@@ -59,6 +60,32 @@ export const getImageURLs = createAsyncThunk('levels/getImageURLs', async (words
     return imageURLs;
 });
 
+export const getUrlsPexels = createAsyncThunk<string[], Word[]>(
+  'levels/urlspexels',
+  async (words: Word[]) => {
+    const API_KEY = '1nweLSDoYFgCMSTQ8wgQ5sLzd4EMKsuX3PU7Q2L8OBWTfGMUny0hAXDW';
+    const client = createClient(API_KEY);
+
+    const imageURLsPromises = words.map(async (item) => {
+      const query = item.word;
+      try {
+        const response = await client.photos.search({ query, per_page: 1 });
+        if ('photos' in response && Array.isArray(response.photos) && response.photos.length > 0) {
+          return response.photos[0].src.original;
+        } else {
+          throw new Error('No photos found');
+        }
+      } catch (error) {
+        console.error(`Error fetching photos for query "${query}":`, error);
+        return `No photo of ${item.word} on Pexels`;
+      }
+    });
+
+    const imageURLs = await Promise.all(imageURLsPromises);
+    return imageURLs;
+  }
+);
+
 export const getPlayerScores = createAsyncThunk('levels/getScores', async () => {
     const refreshToken = localStorage.getItem('refToken');
     const response = await axios.get(`${DEPLOY_DOMAIN}/users/leaderboard`, {
@@ -92,6 +119,42 @@ export const getLng = createAsyncThunk('levels/getLng', async (email: string) =>
     });
     return response.data;
 });
+
+export const addScore = createAsyncThunk('levels/addscore', async({email,score}: {email: string, score: number}) =>{
+    const refreshToken = localStorage.getItem('refToken');
+    const response = await axios.put(`${DEPLOY_DOMAIN}/users/addscore`, 
+    {email, score},
+    {
+        headers: {
+            'x-refresh-token': refreshToken,
+        },
+    });
+    return response.data;
+})
+
+export const getUserScore = createAsyncThunk('levels/getuserscore', async (email: string) => {
+    const refreshToken = localStorage.getItem('refToken');
+    const response = await axios.post(`${DEPLOY_DOMAIN}/users/userscore`, 
+    {email},
+    {
+        headers: {
+            'x-refresh-token': refreshToken,
+        },
+    });
+    return response.data;
+});
+
+export const resetScore = createAsyncThunk('levels/resetscore', async(email: string) =>{
+    const refreshToken = localStorage.getItem('refToken');
+    const response = await axios.put(`${DEPLOY_DOMAIN}/users/resetscore`, 
+    {email},
+    {
+        headers: {
+            'x-refresh-token': refreshToken,
+        },
+    });
+    return response.data;
+})
 
 export const levelSlice = createSlice({
     name: 'levels',
@@ -153,7 +216,51 @@ export const levelSlice = createSlice({
             .addCase(getLng.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message;
-            });
+            })
+            .addCase(getUserScore.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(getUserScore.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.score = action.payload.score;
+            })
+            .addCase(getUserScore.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(addScore.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(addScore.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.score += action.payload.score;
+            })
+            .addCase(addScore.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(resetScore.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(resetScore.fulfilled, (state) => {
+                state.status = 'succeeded';
+                state.score = 0;
+            })
+            .addCase(resetScore.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(getUrlsPexels.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(getUrlsPexels.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.imageURLs = action.payload;
+            })
+            .addCase(getUrlsPexels.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
     },
 });
 

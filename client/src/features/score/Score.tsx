@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../app/store";
+import { getUserScore } from "../levelSlice/levelSlice";
 
 
 const Score = (): JSX.Element => {
     const [redirect, setVisible] = useState(false);
     const score = useSelector((state: RootState) => state.levelReducer.score)
+    const dispatch = useDispatch<AppDispatch>()
     const email = localStorage.getItem("email")
     
     useEffect(() => {  
@@ -16,7 +18,8 @@ const Score = (): JSX.Element => {
         } else {
             setVisible(false)
         }
-    }, [email]);
+        if(email) dispatch(getUserScore(email))
+    }, [email, dispatch]);
 
     
 

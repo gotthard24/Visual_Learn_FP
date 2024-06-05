@@ -65,6 +65,7 @@ export const addScoreByEmail = async ({ email, score }) => {
         await db('users_total_progress')
             .where({ email })
             .increment('score', score);
+        return score
     } catch (error) {
         console.log(`Adding score: ${error}`);
         throw new Error('Adding score failed');
@@ -104,3 +105,23 @@ export const getLanguageByEmail = async(email) => {
         throw new Error('getLanguage failed');
     }
 }
+
+export const getUserScoreByName = async (email) => {
+    try {
+        const userProgress = await db('users_total_progress')
+            .select('score')
+            .where({ email })
+            .first();
+
+        if (!userProgress) {
+            throw new Error('User progress not found');
+        }
+
+        const { score } = userProgress;
+        console.log(score);
+        return score;
+    } catch (error) {
+        console.log(`getScore: ${error}`);
+        throw new Error('getScore failed');
+    }
+};

@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../app/store';
-import { getImageURLs, getWords, getLng } from './levelSlice';
+import { getWords, getLng, addScore} from './levelSlice';
+import { getUrlsPexels } from './levelSlice'
+// import { getImageURLs } from './levelSlice';
 import { useEffect, useState } from 'react';
 
 const WordsDisplay = () => {
@@ -42,7 +44,8 @@ const WordsDisplay = () => {
   const fetchWordsAndImages = async () => {
       const result = await dispatch(getWords());
       if (getWords.fulfilled.match(result)) {
-        await dispatch(getImageURLs(result.payload));
+        await dispatch(getUrlsPexels(result.payload))
+        // await dispatch(getImageURLs(result.payload));
       }
   };
 
@@ -53,6 +56,7 @@ const WordsDisplay = () => {
         if(word === cards[count].word){
           console.log('WP');
           setCount(count + 1)
+          if (email) dispatch(addScore({email, score: 1}))
           setMessage('')
         } else {
           console.log('Dolboeb');
@@ -63,6 +67,7 @@ const WordsDisplay = () => {
         if(word === cards[count].word_heb){
           console.log('WP');
           setCount(count + 1)
+          if (email) dispatch(addScore({email, score: 1}))
           setMessage('')
         } else {
           console.log('Dolboeb');
@@ -73,6 +78,7 @@ const WordsDisplay = () => {
         if(word === cards[count].word_rus){
           console.log('WP');
           setCount(count + 1)
+          if (email) dispatch(addScore({email, score: 1}))
           setMessage('')
         } else {
           console.log('Dolboeb');
@@ -142,7 +148,7 @@ const WordsDisplay = () => {
   return (
     <>
       <h1>Level 1: Food</h1>
-      {/* {console.log('cards', cards)} */}
+      {console.log('cards', cards)}
       {/* {console.log('words', words)} */}
       {status === 'loading' && <p>Loading...</p>}
       {status === 'failed' && <p>Error loading data.</p>}
@@ -155,7 +161,8 @@ const WordsDisplay = () => {
           {isStarted ? 
             <>
               <div key={count}>
-                {cards[count].image && <img src={cards[count].image} alt={cards[count].word} style={{ width: '25vw' }} />} <br />
+                {language === 'english' ? cards[count].word_heb : language === 'hebrew' ? cards[count].word : cards[count].word}<br />
+                {cards[count].image && <img src={cards[count].image} alt={cards[count].word} style={{ width: '20vw' }} />} <br />
                 {shuffledButtons(count)}
               </div>
               <h1>{message}</h1>

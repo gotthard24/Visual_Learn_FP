@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "../../app/store"
-import { getLng, setLanguage } from "./levelSlice"
+import { getLng, resetScore, setLanguage } from "./levelSlice"
 import { useEffect } from "react"
 
 const Settings = () => {
@@ -21,6 +21,10 @@ const Settings = () => {
         if(email) await dispatch(getLng(email))
     }
 
+    const reset = async() => {
+        if(email) await dispatch(resetScore(email))
+    }
+
     return(
         <>
             <h1>Settings</h1>
@@ -31,6 +35,8 @@ const Settings = () => {
             <button onClick={() => changeLanguage('russian')}>Russian</button> <br /> <br />
             <button onClick={() => changeLanguage('hebrew')}>Hebrew</button> <br /> <br />
             <hr />
+            <button onClick={() => reset()}>Reset Progress</button>
+            {/* https://api.pexels.com/v1/search */}
         </>
     )
 }

@@ -1,4 +1,4 @@
-import { register, login, getWords, getUsersProgress, addScoreByEmail, resetProgressByEmail, changeLanguageByEmail, getLanguageByEmail} from "../models/users.m.js"
+import { register, login, getWords, getUsersProgress, addScoreByEmail, resetProgressByEmail, changeLanguageByEmail, getLanguageByEmail, getUserScoreByName} from "../models/users.m.js"
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import jwt from "jsonwebtoken"
@@ -122,7 +122,7 @@ export const _addScoreByEmail = async (req, res) => {
         }
 
         await addScoreByEmail({ email, score });
-        res.status(200).json({ msg: 'Score added successfully' });
+        res.status(200).json({ msg: 'Score added successfully', score });
     } catch (error) {
         console.log(`_addScoreByEmail => ${error}`);
         res.status(500).json({ msg: 'Adding score failed' });
@@ -148,7 +148,6 @@ export const _resetProgressByEmail = async(req, res) => {
 export const _changeLanguageByEmail = async(req, res) => {
     try {
         const {email, language} = req.body
-        // console.log(language);
         if(!email || (language !== 'english' && language !== 'russian' && language !== 'hebrew')){
             return res.status(400).json({ msg: 'Invalid data provided' });
         }
@@ -171,5 +170,19 @@ export const _getLanguageByEmail = async (req, res) => {
     } catch (error) {
         console.log(`_getLanguageByEmail => ${error}`);
         res.status(500).json({ msg: 'Getting Lang failed' });
+    }
+}
+
+export const _getUserScoreByName = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ msg: 'Invalid data provided' });
+        }
+        const score = await getUserScoreByName(email)
+        res.status(200).json({ msg: 'Language get successfully', score });
+    } catch (error) {
+        console.log(`_getUserScorel => ${error}`);
+        res.status(500).json({ msg: 'Getting SCORE failed' });
     }
 }
