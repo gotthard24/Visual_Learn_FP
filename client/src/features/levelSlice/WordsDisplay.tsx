@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../app/store';
 import { getWords, getLng, addScore} from './levelSlice';
-import { getUrlsPexels } from './levelSlice'
-// import { getImageURLs } from './levelSlice';
+// import { getUrlsPexels } from './levelSlice'
+import { getImageURLs } from './levelSlice';
 import { useEffect, useState } from 'react';
 
 const WordsDisplay = () => {
@@ -44,8 +44,8 @@ const WordsDisplay = () => {
   const fetchWordsAndImages = async () => {
       const result = await dispatch(getWords());
       if (getWords.fulfilled.match(result)) {
-        await dispatch(getUrlsPexels(result.payload))
-        // await dispatch(getImageURLs(result.payload));
+        // await dispatch(getUrlsPexels(result.payload))
+        await dispatch(getImageURLs(result.payload));
       }
   };
 
