@@ -23,6 +23,7 @@ interface LevelState {
     progress: number;
     score: number;
     language: 'english' | 'russian' | 'hebrew'
+    difficulty: 'easy' | 'normal' | 'hard'
     leaderboard: Score[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null | undefined;
@@ -34,14 +35,15 @@ const initialState: LevelState = {
     progress: 1,
     score: 0,
     language: 'english',
+    difficulty: 'easy',
     leaderboard:[],
     status: 'idle',
     error: null,
 };
 
-export const getWords = createAsyncThunk('levels/getWords', async () => {
+export const getWords = createAsyncThunk('levels/getWords', async (level: number) => {
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.get(`${DEPLOY_DOMAIN}/users/words`, {
+    const response = await axios.get(`${DEPLOY_DOMAIN}/users/words/${level}`, {
         headers: {
             'x-refresh-token': refreshToken,
         },
@@ -156,10 +158,63 @@ export const resetScore = createAsyncThunk('levels/resetscore', async(email: str
     return response.data;
 })
 
+export const setDifficulty = createAsyncThunk('levels/setdiff', async ({email, difficulty}: {email:string, difficulty: 'easy' | 'normal' | 'hard'}) => {
+    const refreshToken = localStorage.getItem('refToken');
+    const response = await axios.put(`${DEPLOY_DOMAIN}/users/changediff`, 
+    { email,difficulty},
+    {
+        headers: {
+            'x-refresh-token': refreshToken,
+        },
+    });
+    return response.data;
+});
+
+export const getDifficulty = createAsyncThunk('levels/getdiff', async (email: string) => {
+    const refreshToken = localStorage.getItem('refToken');
+    const response = await axios.post(`${DEPLOY_DOMAIN}/users/userdiff`, 
+    {email},
+    {
+        headers: {
+            'x-refresh-token': refreshToken,
+        },
+    });
+    return response.data;
+});
+
+export const addProgress = createAsyncThunk('levels/addprogress', async(email: string) =>{
+    const refreshToken = localStorage.getItem('refToken');
+    const response = await axios.put(`${DEPLOY_DOMAIN}/users/addprogress`, 
+    {email},
+    {
+        headers: {
+            'x-refresh-token': refreshToken,
+        },
+    });
+    return response.data;
+})
+
+export const getUserProgress = createAsyncThunk('levels/getuserprogress', async (email: string) => {
+    const refreshToken = localStorage.getItem('refToken');
+    const response = await axios.post(`${DEPLOY_DOMAIN}/users/userprogress`, 
+    {email},
+    {
+        headers: {
+            'x-refresh-token': refreshToken,
+        },
+    });
+    return response.data;
+});
+
+
 export const levelSlice = createSlice({
     name: 'levels',
     initialState,
-    reducers: {},
+    reducers: {
+        setStoreScore(state, action){
+            state.score = action.payload
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getWords.pending, (state) => {
@@ -261,7 +316,53 @@ export const levelSlice = createSlice({
                 state.status = 'failed';
                 state.error = action.error.message;
             })
+            .addCase(setDifficulty.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(setDifficulty.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.difficulty = action.payload.difficulty;
+            })
+            .addCase(setDifficulty.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(getDifficulty.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(getDifficulty.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.language = action.payload.difficulty;
+            })
+            .addCase(getDifficulty.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(addProgress.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(addProgress.fulfilled, (state) => {
+                state.status = 'succeeded';
+                state.progress += 1;
+            })
+            .addCase(addProgress.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(getUserProgress.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(getUserProgress.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.progress = action.payload.progress;
+            })
+            .addCase(getUserProgress.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
     },
 });
+
+export const { setStoreScore } = levelSlice.actions;
 
 export default levelSlice.reducer;

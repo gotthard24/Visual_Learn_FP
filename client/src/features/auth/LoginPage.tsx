@@ -21,7 +21,6 @@ const LoginPage = ({ page }: LoginPageProps) => {
 
   const loginregister = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // console.log(`${DEPLOY_DOMAIN}/users/login`);
     if (page === "Login") {
       try {
         const response = await axios.post(`${DEPLOY_DOMAIN}/users/login`, {

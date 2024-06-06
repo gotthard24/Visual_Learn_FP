@@ -2,16 +2,21 @@ import { Link, useNavigate } from "react-router-dom"
 import {Button, Stack} from '@mui/material'
 import { useContext } from "react"
 import { AuthContext, AuthContextType } from "../../App"
+import { useDispatch } from "react-redux"
+import { AppDispatch } from "../../app/store"
+import { setStoreScore } from "../levelSlice/levelSlice"
 
 const Header = () => {
     const { setToken} = useContext(AuthContext) as AuthContextType
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>()
 
     const logoutHandler = () => {
         if (localStorage.getItem('refToken')){
             localStorage.removeItem('email')
             localStorage.removeItem('refToken')
             setToken(undefined)
+            dispatch(setStoreScore(0))
             alert("Successfull logout")
             navigate('/login');
         } else {

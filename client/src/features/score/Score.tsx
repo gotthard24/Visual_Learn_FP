@@ -5,12 +5,12 @@ import { getUserScore } from "../levelSlice/levelSlice";
 
 
 const Score = (): JSX.Element => {
-    const [redirect, setVisible] = useState(false);
+    const [visibility, setVisible] = useState(false);
     const score = useSelector((state: RootState) => state.levelReducer.score)
     const dispatch = useDispatch<AppDispatch>()
-    const email = localStorage.getItem("email")
     
     useEffect(() => {  
+        const email = localStorage.getItem("email")
         console.log(email);
            
         if(email !== null){
@@ -19,11 +19,11 @@ const Score = (): JSX.Element => {
             setVisible(false)
         }
         if(email) dispatch(getUserScore(email))
-    }, [email, dispatch]);
+    }, [score, dispatch]);
 
     
 
-    return redirect ? <h2>Score: {score}</h2> : <></>;
+    return visibility ? <h2>Score: {score}</h2> : <></>;
 };
 
 export default Score;

@@ -37,10 +37,11 @@ export const login = async (email) => {
     }
 }
 
-export const getWords = async (email) => {
+export const getWordsByLevel = async (level) => {
     try {
-        const words = db('words')
+        const words = await db('words')
         .select('id', 'word', 'word_in_hebrew', 'word_in_russian', 'level')
+        .where('level', level)
         return words
     } catch (error) {
         console.log(`Get all words: ${error}`);      
@@ -76,7 +77,10 @@ export const resetProgressByEmail = async(email) => {
     try {
         await db('users_total_progress')
             .where({ email })
-            .update('score', 0);
+            .update({
+                score: 0,
+                progress: 1
+            });
     } catch (error) {
         console.log(`Reset: ${error}`);
         throw new Error('Reset failed');
@@ -118,10 +122,63 @@ export const getUserScoreByName = async (email) => {
         }
 
         const { score } = userProgress;
-        console.log(score);
         return score;
     } catch (error) {
         console.log(`getScore: ${error}`);
         throw new Error('getScore failed');
+    }
+};
+
+export const changeDifficultyByEmail = async({email, difficulty}) => {
+    try {
+        await db('users')
+            .where({ email })
+            .update({difficulty});
+    } catch (error) {
+        console.log(`changeDifficulty: ${error}`);
+        throw new Error('change Difficulty failed');
+    }
+}
+
+export const getDifficultyByEmail = async(email) => {
+    try {
+        const [difficulty1] = await db('users')
+            .select('difficulty')
+            .where({ email })
+        const {difficulty} = difficulty1
+        return difficulty
+    } catch (error) {
+        console.log(`getDifficulty: ${error}`);
+        throw new Error('get Difficulty failed');
+    }
+}
+
+export const addProgressByEmail = async (email) => {
+    try {
+        await db('users_total_progress')
+            .where({ email })
+            .increment('progress', 1);
+    } catch (error) {
+        console.log(`Adding progress: ${error}`);
+        throw new Error('Adding progress failed');
+    }
+};
+
+export const getUserProgressByEmail = async (email) => {
+    try {
+        const userProgress = await db('users_total_progress')
+            .select('progress')
+            .where({ email })
+            .first();
+
+        if (!userProgress) {
+            throw new Error('User progress not found');
+        }
+
+        const { progress } = userProgress;
+        return progress;
+    } catch (error) {
+        console.log(`getProgress: ${error}`);
+        throw new Error('getProgress failed');
     }
 };

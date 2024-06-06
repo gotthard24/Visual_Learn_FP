@@ -1,4 +1,4 @@
-import { register, login, getWords, getUsersProgress, addScoreByEmail, resetProgressByEmail, changeLanguageByEmail, getLanguageByEmail, getUserScoreByName} from "../models/users.m.js"
+import { register, login, getUsersProgress, addScoreByEmail, resetProgressByEmail, changeLanguageByEmail, getLanguageByEmail, getUserScoreByName ,changeDifficultyByEmail, getDifficultyByEmail, getWordsByLevel, addProgressByEmail, getUserProgressByEmail} from "../models/users.m.js"
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import jwt from "jsonwebtoken"
@@ -91,9 +91,10 @@ export const _getuser = async(req, res) => {
     }
 }
 
-export const _getWords = async(req, res) => {
+export const _getWordsByLevel = async(req, res) => {
+    const level = req.params.level
     try {
-        const words = await getWords()
+        const words = await getWordsByLevel(level)
         if(!words) return res.status(500).json({msg: 'Words not found'})
         res.json(words)
     } catch (error) {
@@ -184,5 +185,63 @@ export const _getUserScoreByName = async (req, res) => {
     } catch (error) {
         console.log(`_getUserScorel => ${error}`);
         res.status(500).json({ msg: 'Getting SCORE failed' });
+    }
+}
+
+export const _changeDifficultyByEmail = async(req, res) => {
+    try {
+        const {email, difficulty} = req.body
+        if(!email || (difficulty !== 'easy' && difficulty !== 'normal' && difficulty !== 'hard')){
+            return res.status(400).json({ msg: 'Invalid data provided' });
+        }
+        await changeDifficultyByEmail({email,difficulty})
+        res.status(200).json({ msg: 'Language changed successfully', difficulty });
+    } catch (error) {
+        console.log(`_changedifficultyByEmail => ${error}`);
+        res.status(500).json({ msg: 'Changing difficulty failed' });
+    }
+}
+
+export const _getDifficultyByEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ msg: 'Invalid data provided' });
+        }
+        const difficulty = await getDifficultyByEmail(email);
+        res.status(200).json({ msg: 'difficulty get successfully', difficulty });
+    } catch (error) {
+        console.log(`_getLanguageByEmail => ${error}`);
+        res.status(500).json({ msg: 'Getting difficulty failed' });
+    }
+}
+
+export const _addProgressByEmail = async (req, res) => {
+    try {
+        const { email} = req.body;
+
+        if (!email) {
+            return res.status(400).json({ msg: 'Invalid data provided' });
+        }
+
+        await addProgressByEmail(email)
+        res.status(200).json({ msg: 'Progress added successfully'});
+    } catch (error) {
+        console.log(`_addScoreByEmail => ${error}`);
+        res.status(500).json({ msg: 'Adding progress failed' });
+    }
+};
+
+export const _getUserProgressByEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ msg: 'Invalid data provided' });
+        }
+        const progress = await getUserProgressByEmail(email)
+        res.status(200).json({ msg: 'Progress get successfully', progress });
+    } catch (error) {
+        console.log(`_getUserProgress => ${error}`);
+        res.status(500).json({ msg: 'Getting Progress failed' });
     }
 }

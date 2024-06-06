@@ -32,7 +32,12 @@ function App() {
             <Route path='/' element={<Auth><Home/></Auth>}/>
             <Route path='/login' element={<LoginPage page={"Login"} />} />
             <Route path='/register' element={<LoginPage page={"Register"} />} />
-            <Route path='/words' element={<Auth><WordsDisplay/></Auth>} />
+            <Route path='/level1' element={<Auth><WordsDisplay level={1} name={'Food'}/></Auth>} />
+            <Route path='/level2' element={<Auth><WordsDisplay level={2} name={'Food'}/></Auth>} />
+            <Route path='/level3' element={<Auth><WordsDisplay level={3} name={'Food'}/></Auth>} />
+            <Route path='/level4' element={<Auth><WordsDisplay level={4} name={'Food'}/></Auth>} />
+            <Route path='/level5' element={<Auth><WordsDisplay level={5} name={'Food'}/></Auth>} />
+            <Route path='/level6' element={<Auth><WordsDisplay level={6} name={'Body Parts'}/></Auth>} />
             <Route path='/leaderboard' element={<Auth><LeaderBoard/></Auth>} />
             <Route path='/settings' element={<Auth><Settings/></Auth>} />
           </Routes>
