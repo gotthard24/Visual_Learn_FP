@@ -21,9 +21,8 @@ const Home = () => {
 
   return (
     <>
-      <h1>Levels</h1>
+      <h2>Welcome, {`${email}`} !</h2>
       <ul>
-        <h2>Welcome, {`${email}`} !</h2>
         <h3>Chapter 1: Food</h3>
         <Stack spacing={2} direction={'row'}>
             <Button component={Link} to="/level1">
@@ -48,12 +47,12 @@ const Home = () => {
                 Level 6
             </Button>
         </Stack>
-        {/* <h3>Chapter 3: Extra</h3>
+        <h3>Chapter 3: Extra</h3>
         <Stack spacing={2} direction={'row'}>
-            <Button component={Link} to="/level6">
-                Level 6
+            <Button component={Link} to="/extra">
+                Extra lvl
             </Button>
-        </Stack> */}
+        </Stack>
       </ul>
     </>
   );

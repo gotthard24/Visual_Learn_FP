@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import usersRouter from './routers/users.r.js';
+import routerS3 from './routers/s3router.js'
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -36,6 +37,7 @@ app.get("/api", (req, res) => {
 });
 
 app.use('/users', usersRouter);
+app.use('/s3', routerS3);
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
 

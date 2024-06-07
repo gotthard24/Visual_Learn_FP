@@ -164,7 +164,7 @@ const WordsDisplay = ({level, name} : WordsDisplayProps) => {
   const handleCheckHard = () => {
     const answer = language === 'russian' ? cards[count].word_rus : language === 'english' ? cards[count].word : cards[count].word_heb
     if(hardinputRef.current) {
-      if( answer === hardinputRef.current.value){
+      if( answer.toLowerCase() === hardinputRef.current.value.toLowerCase()){
         nextQuestCheck()     
       }else {
         console.log('Sad');
