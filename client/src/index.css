@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
+
+*{
+  font-family: 'Unbounded';
+}
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -28,7 +33,7 @@ body {
   place-items: start;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #242424;
+  background-color: #161616;
 }
 
 h1 {
@@ -40,10 +45,11 @@ button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
+  margin: 5px;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #1948af;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -53,6 +59,19 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+.home_section {
+  margin-top: 30px;
+  text-align: center;
+  background-color: #15173b; 
+  padding: 20px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 10px; 
+}
+
+.card_image{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 10px; 
 }
 
 @media (prefers-color-scheme: light) {

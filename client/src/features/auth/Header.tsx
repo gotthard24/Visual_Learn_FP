@@ -7,7 +7,8 @@ import { AppDispatch } from "../../app/store"
 import { setStoreScore } from "../levelSlice/levelSlice"
 
 const Header = () => {
-    const { token, setToken } = useContext(AuthContext) as AuthContextType
+    const { setToken } = useContext(AuthContext) as AuthContextType
+    const email = localStorage.getItem('email')
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>()
 
@@ -27,7 +28,7 @@ const Header = () => {
     return (
         <div className="header-container">
             <Stack spacing={2} direction={'row'} className="header-buttons">
-                {token ? (
+                {email ? (
                     <>
                         <Button component={Link} to="/">
                             Play

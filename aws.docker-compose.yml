@@ -1,0 +1,31 @@
+version: "3.9"
+services: 
+  client:
+    image: gotthard24/client
+    container_name: client
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    environment:
+      - API_URL=http://server:3001
+    depends_on:
+      server:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --fail -s -o /dev/null --write-out '%{http_code}' http://127.0.0.1/ | grep 200 || exit 1"
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 15s
+  server:
+    image: gotthard24/server
+    container_name: server
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    healthcheck:
+      test: "curl --fail -s -o /dev/null --write-out '%{http_code}' http://127.0.0.1:3001/health | grep 200 || exit 1"
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 15s

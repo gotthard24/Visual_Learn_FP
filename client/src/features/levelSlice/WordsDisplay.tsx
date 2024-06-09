@@ -193,7 +193,7 @@ const WordsDisplay = ({level, name} : WordsDisplayProps) => {
                 <>
                   <div key={count}>
                     {language === 'english' ? cards[count].word_heb : language === 'hebrew' ? cards[count].word : cards[count].word}<br />
-                    {cards[count].image && <img src={cards[count].image} alt={cards[count].word} style={{ width: '20vw' }} />} <br />
+                    {cards[count].image && <img className='card_image' src={cards[count].image} alt={cards[count].word} style={{ width: '20vw' }} />} <br />
                     {shuffledButtons(count)}
                   </div>
                   <h1>{message}</h1>
