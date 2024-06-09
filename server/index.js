@@ -27,8 +27,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-app.listen(process.env.PORT || 3002, () => {
-  console.log(`Run on ${process.env.PORT || 3002}`);
+app.listen(process.env.PORT || 3001, () => {
+  console.log(`Run on ${process.env.PORT || 3001}`);
 });
 
 app.get("/api", (req, res) => {
@@ -39,6 +39,7 @@ app.get("/api", (req, res) => {
 
 app.use('/users', usersRouter);
 app.use('/s3', routerS3);
+app.get('/health', (req, res) => {res.sendStatus(200)})
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
