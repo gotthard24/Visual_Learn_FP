@@ -47,8 +47,6 @@ export const _getImageByName = async(req, res) => {
     const name = req.params.name
     try {
         const image = await getImageByName(name)
-        // console.log(image);
-        // console.log('name', name);
         if(!image) return res.status(500).json({msg: 'Image not found'})
         res.json(image)
     } catch (error) {
@@ -78,5 +76,27 @@ export const _getSignedUrl = async(req, res) => {
     } catch (error) {
         console.error('s3 SIGNED url add failed:', error);
         res.status(500).json({ error: 's3 SIGNED url add failed' });
+    }
+}
+
+export const _getPhoto = async(req, res) => {
+    try {
+        const params = {
+            Bucket: 'visual-english-fp',
+            Key: 'photo_5407056443900816425_y.jpg',
+        };
+
+        s3.getObject(params, (err, data) => {
+            if (err) {
+                console.error('Download error S3:', err);
+                return res.status(500).json({ error: 'Download error S3' });
+            }
+
+            res.writeHead(200, {'Content-Type': 'image/jpeg'});
+            res.end(data.Body);
+        });
+    } catch (error) {
+        console.error('Getting image error S3:', error);
+        res.status(500).json({ error: 'Getting image error S3' });
     }
 }

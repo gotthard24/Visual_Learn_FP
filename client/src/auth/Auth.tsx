@@ -1,7 +1,6 @@
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../App";
-import axios from "axios";
-import { DEPLOY_DOMAIN} from "../hosts/options";
+import client from "../api";
 
 interface AuthProps {
     children: ReactNode;
@@ -19,7 +18,7 @@ const Auth = ({ children }: AuthProps): JSX.Element => {
 
     const verify = async () => {
         try {
-            const response = await axios.get(`${DEPLOY_DOMAIN}/users/verify`, {
+            const response = await client.get(`/users/verify`, {
                 headers: {
                     'x-access-token': token,
                     'x-refresh-token': refreshToken

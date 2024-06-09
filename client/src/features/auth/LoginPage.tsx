@@ -1,10 +1,10 @@
 import { useState, useContext, ChangeEvent, MouseEvent } from "react";
-import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { Box, TextField, Button } from "@mui/material";
 import { AuthContext } from "../../App";
 import { AuthContextType } from "../../App";
-import { DEPLOY_DOMAIN } from "../../hosts/options";
+import client from "../../api";
+import axios from "axios";
 
 interface LoginPageProps {
   page: "Login" | "Register";
@@ -23,7 +23,7 @@ const LoginPage = ({ page }: LoginPageProps) => {
     event.preventDefault();
     if (page === "Login") {
       try {
-        const response = await axios.post(`${DEPLOY_DOMAIN}/users/login`, {
+        const response = await client.post(`/users/login`, {
           email, password
         }, { withCredentials: true });
         if (response.status === 200) {
@@ -46,7 +46,7 @@ const LoginPage = ({ page }: LoginPageProps) => {
       }
     } else {
       try {
-        const response = await axios.post(`${DEPLOY_DOMAIN}/users/register`, {
+        const response = await client.post(`/users/register`, {
           email, password
         }, { withCredentials: true });
         if (response.status === 200) {

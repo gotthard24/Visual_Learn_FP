@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
-import { DEPLOY_DOMAIN } from "../../hosts/options";
 import { useNavigate } from "react-router-dom";
+import client from "../../api";
 
 interface ImgObj {
     id: number;
     word: string;
     word_heb: string;
     word_rus: string;
-    url: string;
     level: number;
 }
 
 const ExtraLvl = () => {
     const [image, setImage] = useState<ImgObj | null>(null);
-    const [url, setUrl] = useState<string | undefined>();
-    const navigate = useNavigate()
+    const [photoData, setPhotoData] = useState<string | undefined>();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchData();
@@ -22,20 +21,15 @@ const ExtraLvl = () => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch(`${DEPLOY_DOMAIN}/s3/getimg/smile`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch data');
-            }
-            const data = await response.json();
+            const response = await client.get(`/s3/getimg/smile`);
+            const imageData = await response.data;
+            setImage(imageData);
 
-            const urlResponse = await fetch(`${DEPLOY_DOMAIN}/s3/gettesturl`)
-            if (!response.ok) {
-                throw new Error('Failed to fetch SIGNED URL data');
-            }
-            const urlData = await urlResponse.json();
-
-            setImage(data);
-            setUrl(urlData.url)
+            const urlResponse = await client.get(`/s3/getphoto`);
+            const urlData = await urlResponse.data;
+            console.log(urlData);
+            
+            setPhotoData(urlData);
         } catch (error) {
             console.error('Fetch failed:', error);
         }
@@ -44,14 +38,17 @@ const ExtraLvl = () => {
     return (
         <>
             <h2>Hello From AWS S3 storage</h2>
-            {console.log(image)}
             {image ? (
                 <div>
                     <p>ID: {image.id}</p>
                     <p>Word: {image.word}</p>
                     <p>Word Heb: {image.word_heb}</p>
                     <p>Word Rus: {image.word_rus}</p>
-                    <img src={url} alt={image.word} />
+                    {photoData ? (
+                        <img src={photoData} alt={image.word} />
+                    ) : (
+                        <p>Loading image...</p>
+                    )}
                 </div>
             ) : (
                 <p>Loading...</p>

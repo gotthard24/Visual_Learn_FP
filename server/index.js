@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 
 dotenv.config();
 
-const {LOCAL_ORIGIN, DOMAIN_ORIGIN} = process.env
+// const {LOCAL_ORIGIN, DOMAIN_ORIGIN} = process.env
 
 const app = express();
 
@@ -18,16 +18,17 @@ const __dirname = path.dirname(__filename);
 
 app.use(cors(
   {
-      origin: DOMAIN_ORIGIN,
+      origin: (_, callback) => callback(null, true),
       credentials: true,
+
   }
 ))
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-app.listen(process.env.PORT || 3001, () => {
-  console.log(`Run on ${process.env.PORT || 3001}`);
+app.listen(process.env.PORT || 3002, () => {
+  console.log(`Run on ${process.env.PORT || 3002}`);
 });
 
 app.get("/api", (req, res) => {

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { DEPLOY_DOMAIN } from "../../hosts/options";
 import axios from "axios";
 import { createClient } from 'pexels';
+import client from "../../api";
 
 export interface Word {
     id: number;
@@ -43,7 +43,7 @@ const initialState: LevelState = {
 
 export const getWords = createAsyncThunk('levels/getWords', async (level: number) => {
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.get(`${DEPLOY_DOMAIN}/users/words/${level}`, {
+    const response = await client.get(`/users/words/${level}`, {
         headers: {
             'x-refresh-token': refreshToken,
         },
@@ -90,7 +90,7 @@ export const getUrlsPexels = createAsyncThunk<string[], Word[]>(
 
 export const getPlayerScores = createAsyncThunk('levels/getScores', async () => {
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.get(`${DEPLOY_DOMAIN}/users/leaderboard`, {
+    const response = await client.get(`/users/leaderboard`, {
         headers: {
             'x-refresh-token': refreshToken,
         },
@@ -100,7 +100,7 @@ export const getPlayerScores = createAsyncThunk('levels/getScores', async () => 
 
 export const setLanguage = createAsyncThunk('levels/setlang', async ({email, language}: {email:string, language: 'english' | 'russian' | 'hebrew'}) => {
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.put(`${DEPLOY_DOMAIN}/users/changeln`, 
+    const response = await client.put(`/users/changeln`, 
     { email,language},
     {
         headers: {
@@ -112,7 +112,7 @@ export const setLanguage = createAsyncThunk('levels/setlang', async ({email, lan
 
 export const getLng = createAsyncThunk('levels/getLng', async (email: string) => {
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.post(`${DEPLOY_DOMAIN}/users/userlng`, 
+    const response = await client.post(`/users/userlng`, 
     {email},
     {
         headers: {
@@ -124,7 +124,7 @@ export const getLng = createAsyncThunk('levels/getLng', async (email: string) =>
 
 export const addScore = createAsyncThunk('levels/addscore', async({email,score}: {email: string, score: number}) =>{
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.put(`${DEPLOY_DOMAIN}/users/addscore`, 
+    const response = await client.put(`/users/addscore`, 
     {email, score},
     {
         headers: {
@@ -136,7 +136,7 @@ export const addScore = createAsyncThunk('levels/addscore', async({email,score}:
 
 export const getUserScore = createAsyncThunk('levels/getuserscore', async (email: string) => {
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.post(`${DEPLOY_DOMAIN}/users/userscore`, 
+    const response = await client.post(`/users/userscore`, 
     {email},
     {
         headers: {
@@ -148,7 +148,7 @@ export const getUserScore = createAsyncThunk('levels/getuserscore', async (email
 
 export const resetScore = createAsyncThunk('levels/resetscore', async(email: string) =>{
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.put(`${DEPLOY_DOMAIN}/users/resetscore`, 
+    const response = await client.put(`/users/resetscore`, 
     {email},
     {
         headers: {
@@ -160,7 +160,7 @@ export const resetScore = createAsyncThunk('levels/resetscore', async(email: str
 
 export const setDifficulty = createAsyncThunk('levels/setdiff', async ({email, difficulty}: {email:string, difficulty: 'easy' | 'normal' | 'hard'}) => {
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.put(`${DEPLOY_DOMAIN}/users/changediff`, 
+    const response = await client.put(`/users/changediff`, 
     { email,difficulty},
     {
         headers: {
@@ -172,7 +172,7 @@ export const setDifficulty = createAsyncThunk('levels/setdiff', async ({email, d
 
 export const getDifficulty = createAsyncThunk('levels/getdiff', async (email: string) => {
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.post(`${DEPLOY_DOMAIN}/users/userdiff`, 
+    const response = await client.post(`/users/userdiff`, 
     {email},
     {
         headers: {
@@ -184,7 +184,7 @@ export const getDifficulty = createAsyncThunk('levels/getdiff', async (email: st
 
 export const addProgress = createAsyncThunk('levels/addprogress', async(email: string) =>{
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.put(`${DEPLOY_DOMAIN}/users/addprogress`, 
+    const response = await client.put(`/users/addprogress`, 
     {email},
     {
         headers: {
@@ -196,7 +196,7 @@ export const addProgress = createAsyncThunk('levels/addprogress', async(email: s
 
 export const getUserProgress = createAsyncThunk('levels/getuserprogress', async (email: string) => {
     const refreshToken = localStorage.getItem('refToken');
-    const response = await axios.post(`${DEPLOY_DOMAIN}/users/userprogress`, 
+    const response = await client.post(`/users/userprogress`, 
     {email},
     {
         headers: {
