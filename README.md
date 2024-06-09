@@ -24,4 +24,6 @@ docker push gotthard24/server:latest
 
 cd /home/ubuntu/app 
 
+docker-compose pull
+
 docker-compose up -d
